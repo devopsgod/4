@@ -1,0 +1,27 @@
+server:
+  port: 8006
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vstudb?currentSchema=department
+    username: vstu_department
+    password: vstu_department
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+  liquibase:
+    change-log: classpath:db/db.changelog-master.yaml
+  mail:
+    username: isap.mail@gmail.com
+    password: isap.mail@gmail.com
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls.enable: true
+          auth: true
+          ssl.trust: smtp.gmail.com
+        debug: false
+        smtps.debug: false

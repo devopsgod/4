@@ -1,0 +1,33 @@
+zuul:
+  hystrix:
+    command:
+      default:
+        execution:
+          isolation:
+            thread:
+              timeoutInMilliseconds: 60000
+  ribbon:
+    ConnectTimeout: 120000
+    ReadTimeout: 120000
+
+  ignoredServices: '*'
+  stripPrefix: true
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    auth-service:
+      path: /api/uaa/**
+      serviceId: auth-service
+
+    admission-committee-service:
+      path: /api/adm-service/**
+      serviceId: admission-committee-service
+
+    department-head-service:
+      path: /api/department-service/**
+      serviceId: department-head-service
+  sensitive-headers:
+server:
+  port: 8080
