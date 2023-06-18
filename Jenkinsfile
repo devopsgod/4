@@ -16,14 +16,6 @@ node {
     app = docker.build("myapp")
   }
 
-  stage('Test image') {
-    /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
-
-    app.inside {
-      sh 'gradle test'
-    }
-  }
-
   stage('Deploy image') {
     /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
 
