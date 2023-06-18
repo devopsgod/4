@@ -21,9 +21,9 @@ pipeline {
         stage('Test image') {
             steps {
                 script {
-                    // Run the Docker container
+                    sh 'docker volume create jenkins-workspace'
                     def app = docker.image('myapp')
-                    app.inside("-p 8000:8000") {
+                    app.run('-v jenkins-workspace:/var/jenkins_home -p 8000:8000').inside() {
                         sh 'gradle test'
                     }
                 }
