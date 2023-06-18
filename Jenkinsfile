@@ -1,34 +1,43 @@
-node {
-  def app
-
-  stage('Clone repository') {
-    /* Let's make sure we have the repository cloned to our workspace */
-
-    checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
-    doGenerateSubmoduleConfigurations: false, 
-    extensions: [], submoduleCfg: [], 
-    userRemoteConfigs: [[url: 'https://github.com/devopsgod/4']]])
-  }
-
-  stage('Build image') {
-    /* This agent directive tells Jenkins to allocate an executor and workspace for the pipeline on any available agent */
-    
-    app = docker.build("myapp")
-  }
-
-  stage('Test image') {
-    /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
-    
-    app.inside {
-      sh 'gradle test'
+pipeline {
+    agent any
+    stages {
+        stage('Clone repository') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
+                doGenerateSubmoduleConfigurations: false, 
+                extensions: [], submoduleCfg: [], 
+                userRemoteConfigs: [[url: 'https://github.com/devopsgod/4']]])
+            }
+        }
+        stage('Build image') {
+            steps {
+                script {
+                    // Build Docker image
+                    def dockerfile = readFile('Dockerfile')
+                    def app = docker.build("myapp", "- < ${dockerfile}")
+                }
+            }
+        }
+        stage('Test image') {
+            steps {
+                script {
+                    // Run the Docker container
+                    def app = docker.image('myapp')
+                    app.inside("-p 8000:8000") {
+                        sh 'gradle test'
+                    }
+                }
+            }
+        }
+        stage('Deploy image') {
+            steps {
+                script {
+                    def app = docker.image('myapp')
+                    docker.withRun("-p 8000:8000 ${app.id}") {
+                        sh 'echo "App is running"'
+                    }
+                }
+            }
+        }
     }
-  }
-
-  stage('Deploy image') {
-    /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
-    
-    sh """
-    docker run -d -p 8000:8000 myapp
-    """
-  }
 }
