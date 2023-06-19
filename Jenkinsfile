@@ -11,16 +11,15 @@ node {
   }
 
   stage('Build image') {
-    /* This agent directive tells Jenkins to allocate an executor and workspace for the pipeline on any available agent */
+  /* This agent directive tells Jenkins to allocate an executor and workspace for the pipeline on any available agent */
 
-    app = docker.build("myapp")
-  }
+  app = docker.build("myapp")
+}
 
-  stage('Deploy image') {
-    /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
+stage('Deploy image') {
+  /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
 
-    sh """
-    docker run -d -p 8000:8000 myapp
-    """
-  }
+  bat(script: 'C:\\Windows\\System32\\cmd.exe /c docker run -d -p 8000:8000 myapp')
+}
+
 }
