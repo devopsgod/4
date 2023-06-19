@@ -17,9 +17,7 @@ node {
   }
 
   stage('Deploy image') {
-    /* This image parameter (of the agent directive) tells Jenkins to use the Docker image, which was previously built, as the execution environment for this stage */
-    sh """
-    docker run -d -p 8000:8000 --name config-service config-service
-    """
+    bat(script: 'C:\\Windows\\System32\\cmd.exe /c docker rm -f config-service-container')
+    bat(script: 'C:\\Windows\\System32\\cmd.exe /c docker run -d -p 8000:8000 --name config-service config-service')
   }
 }
